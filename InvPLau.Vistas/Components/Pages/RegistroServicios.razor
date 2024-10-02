@@ -1,0 +1,66 @@
+﻿@page "/regsrv"
+@using InvPLau.Vistas.Clases
+@using InvPLau.Vistas.Logica
+    @using System.ComponentModel.DataAnnotations;
+    <h3>RegistroServicios</h3>
+    <div class="container-md">
+        <div class="card">
+            <EditForm Model="@models" OnValidSubmit="@buscar">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="row">
+                    <div>
+                        <label>Ingrese la fecha de inicio</label>
+                        <InputDate type="datetime" inputmode="numeric" id="dateBeg" @bind-Value="models.dateBeg" />
+                    </div>
+                    <div>
+                        <label>Ingrese la fecha final</label>
+                        <InputDate type="datetime" inputmode="numeric" id="deteEnd" @bind-Value="models.dateEnd" />
+                    </div>
+                    <div>
+                        <button class="btn btn-group-lg" type="submit"></button>
+                    </div>
+                </div>
+            </EditForm>
+            @if(servicios!=null){
+            @foreach (RegistroServs t in servicios)
+            {
+            <div class="row-cols-auto">
+                <p>@t.Fecha</p>
+                <p>@t.Costo</p>
+                <p>@t.Concepto</p>
+            </div>
+            total +=t.Costo;
+            }
+            <div class="container">
+                <p>El costo total del periodo fue de: @total</p>
+            </div>
+            <button @onclick="descargar" class="btn btn-primary"></button>
+            }
+        </div>
+    </div>
+
+@code {
+    public float total=0;
+    public Model models=new Model();
+    public List<RegistroServs>? servicios=null;
+    private async void buscar()
+    {
+        Logica logica = new Logica();
+        if (models.dateBeg <= models.dateEnd)
+            servicios = logica.ObtenerServiDate(models.dateBeg, models.dateEnd);
+        else
+            await Application.Current.MainPage.DisplayAlert("Error","Ingreso una fecha de inicio posterior a la de fin","OK");
+    }
+    public void descargar()
+    {
+        
+    }
+    public class Model
+    {
+        [Required(ErrorMessage="Fecha obligatoria")]
+        public DateTime dateBeg;
+        [Required(ErrorMessage = "Fecha obligatoria")]
+        public DateTime dateEnd;
+    }
+}

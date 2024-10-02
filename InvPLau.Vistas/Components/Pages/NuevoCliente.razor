@@ -1,0 +1,36 @@
+﻿@page "/newcli"
+@using InvPLau.Vistas.Clases
+@using InvPLau.Vistas.Logica
+@inject NavigationManager nav;
+<div class="container">
+    <h1>Nuevo Cliente</h1>
+    <div>
+        <EditForm OnValidSubmit="Guardar" Model="model">
+            <div class="row">
+                <label>Numero de identificacion</label>
+                <InputNumber @bind-Value="model.Id"/>
+            </div>
+            <div class="row">
+                <label>Nombre</label>
+                <InputText @bind-Value="model.Name"/>
+            </div>
+            <div class="row">
+                <label>Apellido</label>
+                <InputText @bind-Value="model.SurName"/>
+            </div>
+            <div class="row">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private Legajo model = new Legajo();
+    public async void Guardar(){
+        Logica logica = new Logica();
+        logica.NuevoLegajo(model);
+        await Application.Current.MainPage.DisplayAlert("Guardado","Se guardo al cliente","OK");
+        nav.NavigateTo("/");
+    }
+}

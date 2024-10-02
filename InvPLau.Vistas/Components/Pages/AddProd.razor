@@ -1,0 +1,34 @@
+﻿@page "/addprod"
+@using InvPLau.Vistas.Clases
+@using InvPLau.Vistas.Logica
+@inject NavigationManager nav
+
+<div class="container">
+    <h1>Ingreso de @produc.Productos</h1>
+    <EditForm @Model="model">
+        <div class="row">
+            <label>Ingrese el stock a ingresar</label>
+            <InputNumber id="Cantidad" @bind-Value="@model.Cantidad"></InputNumber>
+        </div>
+        <div class="row">
+            <label>Ingrese el precio del ingreso</label>
+            <InputNumber id="Precio" @bind-Value="@model.Precio"></InputNumber>
+        </div>
+        <div class="row">
+            <button type="submit" class="btn btn-primary">Confirmar</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    public Producto produc =new Producto();
+    public ProdStock model=new ProdStock();
+    public async void Guardar()
+    {
+        Logica logica = new Logica();
+        logica.AddProd(model, produc.Productos);
+        await Application.Current.MainPage.DisplayAlert("Guardado", "Se guardo correctamente", "ok");
+        nav.NavigateTo("/");
+    }
+
+}

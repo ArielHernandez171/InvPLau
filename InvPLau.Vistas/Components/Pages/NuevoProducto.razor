@@ -1,0 +1,49 @@
+﻿@page "/newprod"
+@using InvPLau.Vistas.Clases
+@using InvPLau.Vistas.Logica
+@using System.ComponentModel.DataAnnotations
+<h3>Nuevo producto</h3>
+
+<div class="container">
+    <div class="align-self-auto">
+        <EditForm Model="@model" OnValidSubmit="@submit">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <div class="row">
+                <label>Ingrese el nombre del Producto</label>
+                <InputText id="Nombre" @bind-Value="model.Productos"/>
+            </div>
+            <div class="row">
+                <label>Ingrese el Precio inicial del Producto</label>
+                <InputNumber id="precio" @bind-Value="model.StockProd.Precio"/>
+            </div>
+            <div class="row">
+                <label>Ingrese la cantidad inicial</label>
+                <InputNumber id="cantidad" @bind-Value="model.StockProd.Cantidad"/>
+            </div>
+            <div class="row">
+                <label>Ingrese el tipo de actualizacion del producto</label>
+                <InputSelect id="tipo" @bind-Value="model.Tipo">
+                    <option value="Tipo.Fifo">Se lista por ingreso</option>
+                    <option value="Tipo.Promedio">Se promedia</option>
+                </InputSelect>
+            </div>
+            <div class="row">
+                <button class="btn btn-primary" type="submit">Guardar</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+@code {
+    Producto model=new Producto();
+    public async void submit(){
+        Logica logica = new Logica();
+        if (model.Tipo == Tipo.Fifo)
+        {
+            model.AddFifo(model.StockProd);
+            model.StockProd = new ProdStock();
+        }
+        logica.GuardarProd(model);
+        await Application.Current.MainPage.DisplayAlert("Atencion","El producto se guardo","OK");
+    }
+}

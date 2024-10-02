@@ -1,0 +1,81 @@
+﻿@using InvPLau.Vistas.Logica
+@using InvPLau.Vistas.Clases
+
+@page "/searchcli"
+<div class="container">
+    <h1>Buscar cliente</h1>
+        <div class="card">
+            <EditForm OnValidSubmit="buscar" Model="legajo">
+                <div class="row">
+                    <label>Id del cliente</label>
+                    <InputNumber @bind-Value="legajo.Id"></InputNumber>
+                </div>
+                <div class="row">
+                    <button type="submit" class="btn btn-primary"></button>
+                </div>
+            </EditForm>
+        </div>
+    @if (a != false)
+    {
+        <EditForm OnValidSubmit="Actualizar" Model="legajo">
+            <div class="row">
+                <label>Id del cliente</label>
+                <InputNumber @bind-Value="legajo.Id"></InputNumber>
+            </div>
+            <div class="row">
+                <label>Nombre del cliente</label>
+                <InputText @bind-Value="legajo.Name"></InputText>
+            </div>
+            <div class="row">
+                <label>Apellido del cliente</label>
+                <InputText @bind-Value="legajo.SurName"></InputText>
+            </div>
+            <div class="row">
+                <label>Historial del cliente</label>
+                <InputText @bind-Value="legajo.Name"></InputText>
+            </div>
+            <div class="row">
+                <button @onclick="AgregarFoto" class="btn btn-primary">Agregar Foto</button>
+            </div>
+            <div class="row">
+                <button @onclick="Actualizar">Actualizar</button>
+            </div>
+            <div class="row">
+                <button @onclick="MostrarFotos">Mostrar fotos</button>
+            </div>
+        </EditForm>
+        @if(imgList!=null){
+            @foreach(byte[] a in imgList){
+                <img src="data:image/png;base64,${a}"/>
+            }
+        }
+    }
+</div>
+
+@code {
+    protected Legajo legajo = new Legajo();
+    protected Logica logica = new Logica();
+    bool a = false;
+    byte[] Imag;
+    List<byte[]> imgList = new List<byte[]>();
+    protected void Actualizar()
+    {
+        logica.ActualizarLegajos(legajo);
+    }
+    protected void AgregarFoto(){
+        legajo.Images.Add(Imag);
+    }
+    protected void MostrarFotos(){
+        imgList = legajo.Images;
+    }
+    protected async void buscar()
+    {
+        legajo = logica.BuscarLegajo(legajo.Id);
+        if(logica.BuscarLegajo(legajo.Id)!=null){
+            a = true;
+        }
+        else{
+            await Application.Current.MainPage.DisplayAlert("Alerta","No se encontro el cliente buscado","OK");
+        }
+    }
+}

@@ -1,0 +1,56 @@
+﻿@page "/listprod"
+@using InvPLau.Vistas.Clases
+@using InvPLau.Vistas.Logica
+
+<div class="container">
+    @foreach(Producto produ in productos)
+    {
+        <div class="row">
+            <div class="col">
+                <label>@produ.Productos</label>
+            </div>
+            <div class="col">
+                <label>@produ.Tipo</label>
+            </div>
+            @if (produ.Tipo==Tipo.Fifo)
+            {
+                @foreach(ProdStock s in produ.StocksFIfo){
+                    <div class="col">
+                        <label>$ @s.Precio</label>
+                    </div>
+                    <div class="col">
+                        <label> C: @s.Cantidad</label>
+                    </div>
+                }
+            }
+            @if(produ.Tipo==Tipo.Promedio){
+                <div class="col">
+                    <label>$ @produ.StockProd.Precio</label>
+                </div>
+                <div class="col">
+                    <label> C: @produ.StockProd.Cantidad</label>
+                </div>
+            }
+            <div class="col">
+                <button class="btn btn-primary" @onclick="()=>Eliminar(produ)">Eliminar</button>
+            </div>
+            <div class="col">
+                <NavLink class="btn btn-primary" href="@($"addprod/{produ}")">Sumar</NavLink>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    public Logica logica = new Logica();
+    public List<Producto> productos=new List<Producto>();
+    protected override void OnInitialized()
+    {
+        productos = logica.ObtenerProductos();
+        base.OnInitialized();
+    }
+    public void Eliminar(Producto p)
+    {
+        logica.EliminarProd(p);
+    }
+}
